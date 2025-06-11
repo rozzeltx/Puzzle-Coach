@@ -17,6 +17,23 @@ const PuzzleCoach = () => {
   const [coachStrategy, setCoachStrategy] = useState('');
   const [currentTargetTile, setCurrentTargetTile] = useState(null);
 
+  // Mobile audio unlock on first touch/click
+  useEffect(() => {
+    const handleFirstTouch = () => {
+      Tone.start().then(() => {
+        console.log("🔈 Audio unlocked");
+      });
+      window.removeEventListener('touchstart', handleFirstTouch);
+      window.removeEventListener('mousedown', handleFirstTouch);
+    };
+    window.addEventListener('touchstart', handleFirstTouch);
+    window.addEventListener('mousedown', handleFirstTouch); // also works on desktop
+    return () => {
+      window.removeEventListener('touchstart', handleFirstTouch);
+      window.removeEventListener('mousedown', handleFirstTouch);
+    };
+  }, []);
+
   // Initialize goal states
   useEffect(() => {
     if (gridSize === 3) {
@@ -591,12 +608,14 @@ const PuzzleCoach = () => {
 
         <div className="control-group">
           <button 
+            type="button"
             onClick={() => setGridSize(3)} 
             className={gridSize === 3 ? 'active' : ''}
           >
             3x3
           </button>
           <button 
+            type="button"
             onClick={() => setGridSize(4)} 
             className={gridSize === 4 ? 'active' : ''}
           >
@@ -604,7 +623,11 @@ const PuzzleCoach = () => {
           </button>
         </div>
 
-        <button onClick={generatePuzzle} className="reset-btn">
+        <button 
+          type="button" 
+          onClick={generatePuzzle} 
+          className="reset-btn"
+        >
           New Puzzle
         </button>
       </div>
