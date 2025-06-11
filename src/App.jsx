@@ -249,17 +249,18 @@ const PuzzleCoach = () => {
     return null;
   };
 
-  // OPTIMIZED: 4x4 coaching system
+  // OPTIMIZED: 4x4 coaching system (fixed iOS reload issue)
   const get4x4CoachSuggestion = () => {
     if (currentPhase === 'top-row') {
       const tile3InPlace = puzzle[2] === 3;
       const tile4InPlace = puzzle[3] === 4;
       
       if (tile3InPlace && tile4InPlace) {
+        // FIXED: Don't recursively call - let useEffect handle it
         setCurrentPhase('left-column');
         setTargetTile(5);
         setCurrentTargetTile(5);
-        return get4x4CoachSuggestion();
+        return null; // Let useEffect trigger on next frame
       }
       
       if (puzzle[0] !== 1) {
@@ -287,8 +288,9 @@ const PuzzleCoach = () => {
         return leftColumnResult;
       }
       
+      // FIXED: Don't recursively call - let useEffect handle it
       setCurrentPhase('remaining');
-      return get4x4CoachSuggestion();
+      return null; // Let useEffect trigger on next frame
     }
     
     if (currentPhase === 'remaining') {
